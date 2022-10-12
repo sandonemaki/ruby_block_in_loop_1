@@ -2,7 +2,7 @@ module Effects
   ALPHABET = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'].freeze
   class Reverse
     def call(words)
-		  words.split(' ').map(&:reverse).join(' ')
+      words.split(' ').map(&:reverse).join(' ')
     end
   end
 
@@ -26,28 +26,26 @@ module Effects
     end
   end
 
-	class Pitch_shift
-		def initialize(pitch)
-			@pitch = pitch
-		end
+  class Pitch_shift
+    def initialize(pitch)
+      @pitch = pitch
+    end
 
-		def call(words)
+    def call(words)
       char_index =
         words.downcase.split('').map { |char|
           # 用途
           # pitch分index番号をshift
           if char.match?(/[a-z]/)
-            char_num = ALPHABET.index(char).to_i + @pitch
-            case char
-            when " "
+            char_num = ALPHABET.index(char) + @pitch
+            if char == " "
               next
-            when char_num < -26 || char_num > 25
-              char_num % 26
             else
-              char_num
+              char_num % 26
             end
           end
       }
+
       shifted_chars =
         char_index.map { |char|
           if char == nil
@@ -72,21 +70,51 @@ module Effects
     end
   end
 end
- # def self.reverse
- #   ->(words) do
- #     words.split(' ').map(&:reverse).join(' ')
- #   end
- # end
 
- # def self.echo(rate)
- #   ->(words) do
- #     words.each_char.map { |c| c == ' ' ? c : c*rate }.join
- #   end
- # end
+#		effect = Effects::Pitch_shift.new(0)
+#    # assert_equal 'ABC abc 123!',
+#		effect.call('ABC abc 123!')
+#
+#		effect = Effects::Pitch_shift.new(1)
+#    # assert_equal 'BCD bcd 123!',
+#		effect.call('ABC abc 123!')
+#
+#		effect = Effects::Pitch_shift.new(2)
+#    # assert_equal 'CDE cde 123!',
+#		effect.call('ABC abc 123!')
+#
+#    effect = Effects::Pitch_shift.new(-1)
+#    # assert_equal 'ZAB zab 123!',
+#		effect.call('ABC abc 123!')
+#
+#		effect = Effects::Pitch_shift.new(26)
+#    # assert_equal 'A a',
+#		effect.call('A a')
+#
+#		effect = Effects::Pitch_shift.new(5)
+#		# assert_equal 'Wzgd nx kzs!',
+#		effect.call('Ruby is fun!')
+#
+#		effect = Effects::Pitch_shift.new(-1)
+#		# assert_equal 'HAL',
+#		effect.call('IBM')
 
- # def self.loud(level)
- #   ->(words) do
- #     words.split(' ').map {|word| word.upcase + '!' * level}.join(' ')
- #   end
- # end
+
+# def self.reverse
+#   ->(words) do
+#     words.split(' ').map(&:reverse).join(' ')
+#   end
+# end
+
+# def self.echo(rate)
+#   ->(words) do
+#     words.each_char.map { |c| c == ' ' ? c : c*rate }.join
+#   end
+# end
+
+# def self.loud(level)
+#   ->(words) do
+#     words.split(' ').map {|word| word.upcase + '!' * level}.join(' ')
+#   end
+# end
 
